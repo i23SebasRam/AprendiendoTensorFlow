@@ -1,11 +1,13 @@
 import os
 import tarfile
 import urllib.request
+import pandas as pd
 
+#Paths en donde se encuentran los datos.
 DOWNLOAD_ROOT = "https://raw.githubusercontent.com/ageron/handson-ml2/master/"
 HOUSING_PATH = os.path.join("datasets", "housing")
 HOUSING_URL = DOWNLOAD_ROOT + "datasets/housing/housing.tgz"
-
+#FUncion que descarga los datos y despues los agrega a la carpeta que ya hay.
 def fetch_housing_data(housing_url=HOUSING_URL, housing_path=HOUSING_PATH):
     os.makedirs(housing_path, exist_ok=True)
     tgz_path = os.path.join(housing_path, "housing.tgz")
@@ -13,5 +15,13 @@ def fetch_housing_data(housing_url=HOUSING_URL, housing_path=HOUSING_PATH):
     housing_tgz = tarfile.open(tgz_path)
     housing_tgz.extractall(path=housing_path)
     housing_tgz.close()
+#fetch_housing_data(housing_url=HOUSING_URL, housing_path=HOUSING_PATH)
 
-fetch_housing_data(housing_url=HOUSING_URL, housing_path=HOUSING_PATH)
+#Hacemos una funcion que nos lee el dataset en csv y lo pasa a un dataframe(pandas)
+
+def load_housing_data(housing_path=HOUSING_PATH):
+    csv_path = os.path.join(housing_path, "housing.csv")
+    return pd.read_csv(csv_path)
+
+housing = load_housing_data(housing_path=HOUSING_PATH)
+housing.info()
