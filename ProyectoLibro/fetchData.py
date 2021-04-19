@@ -2,6 +2,9 @@ import os
 import tarfile
 import urllib.request
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split,StratifiedShuffleSplit
 
 #Paths en donde se encuentran los datos.
 DOWNLOAD_ROOT = "https://raw.githubusercontent.com/ageron/handson-ml2/master/"
@@ -24,4 +27,33 @@ def load_housing_data(housing_path=HOUSING_PATH):
     return pd.read_csv(csv_path)
 
 housing = load_housing_data(housing_path=HOUSING_PATH)
-housing.info()
+
+#El histograma de todo los datos que tenemos.
+"""
+housing.hist(bins = 50, figsize=(20,15))
+plt.show()
+"""
+
+#Una forma de hacer un split de los datos que tenemos, es decir separar los datos para entrenamiento y test.
+train_set, test_set = train_test_split(housing, test_size=0.2, random_state= 42)
+
+#Aca lo que hacemos es una subdivision de los datos que tenemos, para entender las proporciones de ese label.
+#Las dividimos en 5 clasificaciones.
+housing["income_cat"] = pd.cut(housing["median_income"],bins = [0,1.5,3.0,4.5,6.0,np.inf],labels=[1,2,3,4,5])
+housing["income_cat"].hist()
+#plt.show()
+
+#Se realiza el split con ayuda de sklearn, y asi se respeta la misma proporcionalidad de los datos en los dos test set, como deberia de ser.
+split = StratifiedShuffleSplit(n_splits=1, test_size = 0.2, random_state = 42)
+for train_index, test_index in split.split(housing, housing["income_cat"]):
+    strat_train_set = housing.loc[train_index]
+    strat_test_set = housing.loc[test_index]
+"""
+print(strat_test_set["income_cat"].value_counts()/len(strat_test_set))
+print(strat_train_set["income_cat"].value_counts()/len(strat_train_set))
+"""
+
+#Devolvemos al estado original los datos
+for set_ in (strat_train_set, strat_test_set):
+    set_.drop("income_cat", axis=1, inplace = True)
+
