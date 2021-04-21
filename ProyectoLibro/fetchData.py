@@ -57,3 +57,27 @@ print(strat_train_set["income_cat"].value_counts()/len(strat_train_set))
 for set_ in (strat_train_set, strat_test_set):
     set_.drop("income_cat", axis=1, inplace = True)
 
+#Vamos a iniciar el proceso de machine learning
+
+housing = strat_train_set.drop("median_house_value", axis=1)
+housing_labels = strat_train_set["median_house_value"].copy()
+
+# Usamos diferentes alternativas para cuando un atributo le hacen falta datos
+#Alternativa 1 - Quitar los distritos a los cuales les falte ese atributo.
+"""
+housing.dropna(subset=["total_bedrooms"])
+"""
+
+#Alternativa 2 - Quitar todo el atributo
+
+housing.drop("total_bedrooms",axis=1)
+
+
+#Alternativa 3 - Completarlos con el promedio de los datos
+"""
+median = housing["total_bedrooms"].median()
+housing["total_bedrooms"].fillna(median, inplace = true)
+"""
+
+print(housing.info())
+
