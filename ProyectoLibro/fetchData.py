@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split,StratifiedShuffleSplit
 
 #Paths en donde se encuentran los datos.
 DOWNLOAD_ROOT = "https://raw.githubusercontent.com/ageron/handson-ml2/master/"
-HOUSING_PATH = os.path.join("datasets", "housing")
+HOUSING_PATH = os.path.join("D:/","AprendiendoTensorFlow","datasets", "housing")
 HOUSING_URL = DOWNLOAD_ROOT + "datasets/housing/housing.tgz"
 #FUncion que descarga los datos y despues los agrega a la carpeta que ya hay.
 def fetch_housing_data(housing_url=HOUSING_URL, housing_path=HOUSING_PATH):
@@ -40,7 +40,7 @@ train_set, test_set = train_test_split(housing, test_size=0.2, random_state= 42)
 #Aca lo que hacemos es una subdivision de los datos que tenemos, para entender las proporciones de ese label.
 #Las dividimos en 5 clasificaciones.
 housing["income_cat"] = pd.cut(housing["median_income"],bins = [0,1.5,3.0,4.5,6.0,np.inf],labels=[1,2,3,4,5])
-housing["income_cat"].hist()
+#housing["income_cat"].hist()
 #plt.show()
 
 #Se realiza el split con ayuda de sklearn, y asi se respeta la misma proporcionalidad de los datos en los dos test set, como deberia de ser.
@@ -69,15 +69,40 @@ housing.dropna(subset=["total_bedrooms"])
 """
 
 #Alternativa 2 - Quitar todo el atributo
-
+"""
 housing.drop("total_bedrooms",axis=1)
-
+"""
 
 #Alternativa 3 - Completarlos con el promedio de los datos
-"""
+
 median = housing["total_bedrooms"].median()
-housing["total_bedrooms"].fillna(median, inplace = true)
+housing["total_bedrooms"].fillna(median, inplace = True)
+
+
+#El siguiente paso es volver los datos que son textuales a numericos, porque
+#asi funciona machine learning, para esto tenemos dos formas de hacer las cosas
+
+
+#Primer forma - la hacemos dependiendo segun cuantas clasificaciones hayan
+# el problema es que los modelos normalmente entre mas distanciados estan los
+#numeros quiere decir que son menos semejantes entre si.
+
+from sklearn.preprocessing import OrdinalEncoder
+
+housing_cat = housing[["ocean_proximity"]]
+ordinal_enconder = OrdinalEncoder()
+housing_cat_encoded = ordinal_enconder.fit_transform(housing_cat)
+"""
+print(housing_cat_encoded[:10])  
 """
 
-print(housing.info())
+#Ahora usamos otro metodo que se llama onehotencoder en donde lo que hace es que
+#crea un vector con la cantidad total de clasificaciones que hay de ese atributo
+#y procede a poner en uno el valor que le corresponda y cero los otros
 
+from sklearn.preprocessing import OneHotEncoder
+
+cat_encoder = OneHotEncoder()
+housing_cat_1hot = cat_encoder.fit_transform(housing_cat)
+housing_cat_1hot.toarray()
+print(housing_cat_1hot)
