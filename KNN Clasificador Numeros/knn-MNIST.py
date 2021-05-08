@@ -62,13 +62,14 @@ knn_clf.predict(imgBW)
 total = np.zeros((28,56))
 izquierda = x.values[0].reshape(28,28)
 derecha = x.values[1].reshape(28,28)
+derecha = np.roll(derecha,-2)
 total = np.concatenate((izquierda,derecha),axis=1)
 
-plt.imshow(imgBW,cmap="binary")
+plt.imshow(total,cmap="binary")
 plt.axis("off")
 plt.show()
-
 
 label = np.zeros((9))
 label[y[0]] = 1
 label[y[1]] = 1
+
