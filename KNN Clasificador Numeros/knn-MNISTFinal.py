@@ -107,7 +107,8 @@ accuracy_score(ytest[:1000],y_predict2,normalize=False)
 
 
 #Image
-
+img = "C:/Users/pc/OneDrive - Universidad de los andes/Septimo semestre/Robotica/prueba8.jpg"
+img = cv2.imread(img)
 img2 = cv2.resize(img,(28,56),interpolation=cv2.INTER_AREA)
 img2 = cv2.cvtColor(img2,cv2.COLOR_BGR2GRAY)
 norm_img = np.zeros((10,10))
@@ -142,3 +143,15 @@ while (captura.isOpened()):
   else: break
 captura.release()
 cv2.destroyAllWindows()
+
+import matplotlib.pyplot as pt
+cosa = np.apply_along_axis(sum,0,ytrain)
+_ = plt.hist(cosa,bins='auto')
+plt.show()
+
+fig = plt.figure()
+ax = fig.add_axes([0,0,1,1])
+langs = ['0','1','2','3','4','5','6','7','8','9','10']
+students = [23,17,35,29,12]
+ax.bar(langs,cosa)
+plt.show()
